@@ -1,226 +1,181 @@
-let person: object = {
-    name: "Dikshant",
-    age: 20
-}
-
-
-let car: {} = {
-    model: "BMW",
-    color: "black",
-}
-
-person = []
-car = () => { }
-
-//* if we not annotating strict types to objects (or simpling annotating to Object type), person and car can be assigned to array, function, tuple. Which we dont want
-
-let book: {
-    movie: string,
-    rating: number,
-} = {
-    movie: "Godfather",
-    rating: 4
-}
-
-//* Above method of annotating is called object literals annotation
-
-book = []   // now this will throw an error
-
 /**
- * Using type aliasing
+ * Arrays 
  */
 
-type Post = {
-    title: string
-    content: string
-    date: Date
-    author: string
+let a: number[] = [1, 2, 4, 5]
+let b: Array<string> = ["a", "b", "c"]
+let c: (number | string)[] = [1, 4, "adfg"]
+
+type Person = {
+    name: string
+    age: number
+    gender: "male" | "female"
 }
 
-let post1: Post = {
-    title: "Init Post",
-    content: "first post",
-    date: new Date(),
-    author: "new User"
+// Arrays of objects
+let persons: Person[] = [
+    {
+        name: "x",
+        age: 23,
+        gender: "male"
+    },
+    {
+        name: "y",
+        age: 20,
+        gender: "female"
+    }
+]
+
+/**
+ * Tuples
+ */
+
+let s: [string, string, number] = ["John", "Doe", 18]
+
+type Student = [string, string, number, string?]
+
+let s1: Student = ["Dikshant", "Sharma", 20, "hello@gmail.com"]
+let s2: Student = ["X", "Y", 20]
+
+
+type ListOfStudents = [string, ...Student[]]
+
+let failedStudents: ListOfStudents = ["failed", s1, s2, ["new", "student", 21]]
+
+/**
+ * Readonly arrays and tuples
+ */
+
+// arrays
+let num: readonly number[] = [1, 2, 3, 3, 2, 22]
+num.push(12);   // this will thow warning
+type A = Readonly<string[]>
+type B = readonly (number | string)[]
+
+// tuples
+type ReadOnlyTuple = readonly [string, string, number]
+
+
+/**
+ * Enums
+ */
+
+enum Direction {
+    Up,     // 0
+    Left,   // 1
+    Right,  // 2
+    Down,   // 3
 }
 
-let post2: Post = {
-    title: "2 Post",
-    content: "2 post",
-    date: new Date(),
-    author: "new User"
+//* enums are constants readonly and typescript behind the scenes assigns incremental numerical values to each properties. Like here, 
+
+console.log(Direction.Right)
+
+enum Direction2 {
+    Up = 1,
+    Left,   // 2
+    Right,  // 3
+    Down    // 4
 }
 
+console.log(Direction2.Down)
 
-//* declaring types for nested objects
+enum Roles {
+    ADMIN = "admin",
+    AUTHOR = "author",
+    WRITER = "writer"
+}
+
+console.log(Roles.ADMIN)
+
 type User = {
     name: string
-    post: Post
+    email: string
+    role: string
 }
-// another way
-// type User = {
-//     name: string
-//     post: {
-//         title: string
-//         content: string
-//     }
-// }
 
 let user1: User = {
-    name: "Dikshant",
-    post: post1
+    name: "dikshant sharma",
+    email: "hello@email.com",
+    role: Roles.ADMIN
 }
+
+console.log(user1)
+
+//* enums can be heterogenous
+
+enum Direction3 {
+    Up = "up",
+    Left = 1,
+    Down = 2,
+    Right = "right"
+}
+
+//* all enums are compiled down to objects and constants
 
 
 /**
- * Index Signatures
+ * Difference between enum and const objects
  */
 
-// let say we want to declare a type for student with properties name, branch and awards. Award is an object containing objects of award but we dont know the name of awards (i.e. key)
-
-type Student = {
-    name: string
-    branch: string
-    awards: {
-        [key: string]: {        //* here we're not sure about the key (i.e. name of award) but we know that it is string for sure
-            title: string
-            date: Date
-        }
-    }
+enum Constants {
+    pi = 3.14,
+    e = 2.44,
 }
 
-//* Any object can have atmost one Index Signature and signature is only for string or number which is quite obvious
+//* this enums is completely compiled down to js
+
+const enum EConstants {
+    pi = 3.14,
+    e = 2.44
+}
+
+//* when we declare enums with const then only the used enum property is compiled to js
+
+
+const OConstants = {
+    pi: 3.14,
+    e: 2.44
+} as const;
+
+//* now this object will behave as an enum. Because we cant update the properties of this object
+
+/**
+ * Computed Enums
+ */
+
+enum AccessPermission {
+    None = 0,
+    Read = 1,
+    Write = 2,
+    ReadWrite = Read + Write,
+    Delete = 4,
+    All = ReadWrite + Delete
+}
+
+console.log(AccessPermission.All, AccessPermission.ReadWrite)
 
 
 /**
- * Optional Properties and readonly property
+ * enums as types
  */
 
-type Mobile = {
-    name: string
-    price: number
-    resistence?: "ip 6.7" | "ip 6.5"  //* using `?` we mark this property as optional
-    readonly isbn: string  //* once this property is assigned it not be updated again
+enum ShapeType {
+    Circle = "circle",
+    Square = "square"
 }
 
-let m1: Mobile = {
-    name: "hauwai",
-    price: 55000,
-    resistence: "ip 6.5",
-    isbn: "12345tfdsw234"
+type Circle = {
+    shape: ShapeType.Circle,
+    radius: number
 }
 
-let m2: Mobile = {
-    name: "hauwai",
-    price: 55000,
-    isbn: "12345tfcxsw345"
+type Square = {
+    shape: ShapeType.Square,
+    length: number
 }
 
-m2.isbn = "2345trew2345tg"  // this will throws an error
-
-/**
- * Union type on objects
- */
-
-type Dog = {
-    name: string
-    barks: boolean
-    wags: boolean
-}
-
-type Cat = {
-    name: string
-    purrs: boolean
-}
-
-type DogAndCatUnion = Dog | Cat;
-
-//* Union is valid only in case in which the object should contain all properties of atleast one type
-
-let animal1: DogAndCatUnion = {  // this only contain Dog type
-    name: "Dog 1",
-    barks: true,
-    wags: true
-}
-
-let animal2: DogAndCatUnion = {  // this only contain Cat type
-    name: "Dog 2",
-    purrs: true
-}
-
-let animal3: DogAndCatUnion = {  // this contain all properties of Cat and one property of Dog
-    name: "Special Cat",
-    purrs: true,
-    wags: true
-}
-
-
-/**
- * Discriminating Unions
- */
-
-type NetworkLoadingState = {
-    state: "loading"
-}
-
-type NetworkFailedState = {
-    state: "failed"
-    code: number
-}
-
-type NetworkSuccessState = {
-    state: "success"
-    response: {
-        title: string
-        duration: number
-        summary: string
-    }
-}
-
-type NetworkState = NetworkFailedState | NetworkLoadingState | NetworkSuccessState;
-function logger(state: NetworkState) {
-    switch (state.state) {
-        case "loading":
-            return "loading..."
-            break;
-        case "failed":
-            return `Error ${state.code}`
-            break;
-        case "success":
-            return `Success ${state.response.title}`
-            break;
-        default:
-            break;
-    }
-}
-
-
-/**
- * Intersection Type
- */
-
-//* in intersection type of T1 and T2, it should contain common properties and unique properties of both.
-
-type ElectricCar = {
-    name: string
-    color: string
-    fuel: "battery" | "petrol"
-    battery: number
-}
-
-type PetrolCar = {
-    name: string
-    color: string
-    fuel: "petrol" | "battery"
-    tank: number
-}
-
-type HybridCar = ElectricCar & PetrolCar;
-
-let car1: HybridCar = {
-    name: "brezza",
-    color: "white",
-    fuel: "petrol",
-    tank: 30,
-    battery: 20
+let c1: Circle = {
+    radius: 2,
+    shape: ShapeType.Circle
 }
