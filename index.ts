@@ -1,125 +1,226 @@
-// const students = [
-//     {
-//         "name": "Dikshant",
-//         "score": 89,
-//     },
-//     {
-//         "name": "Dikshant",
-//         "score": 89,
+let person: object = {
+    name: "Dikshant",
+    age: 20
+}
+
+
+let car: {} = {
+    model: "BMW",
+    color: "black",
+}
+
+person = []
+car = () => { }
+
+//* if we not annotating strict types to objects (or simpling annotating to Object type), person and car can be assigned to array, function, tuple. Which we dont want
+
+let book: {
+    movie: string,
+    rating: number,
+} = {
+    movie: "Godfather",
+    rating: 4
+}
+
+//* Above method of annotating is called object literals annotation
+
+book = []   // now this will throw an error
+
+/**
+ * Using type aliasing
+ */
+
+type Post = {
+    title: string
+    content: string
+    date: Date
+    author: string
+}
+
+let post1: Post = {
+    title: "Init Post",
+    content: "first post",
+    date: new Date(),
+    author: "new User"
+}
+
+let post2: Post = {
+    title: "2 Post",
+    content: "2 post",
+    date: new Date(),
+    author: "new User"
+}
+
+
+//* declaring types for nested objects
+type User = {
+    name: string
+    post: Post
+}
+// another way
+// type User = {
+//     name: string
+//     post: {
+//         title: string
+//         content: string
 //     }
-// ]
-
-// for (const student of students) {
-//     console.log("name: ", student.name);
-//     console.log("score: ", student.grade);
 // }
 
-// @ ts-ignore
-// function add(a:number, b:number) {
-//     return a + b;
-// }
-
-// console.log(add(5, 4));
-// console.log(add("text", 3));
-
+let user1: User = {
+    name: "Dikshant",
+    post: post1
+}
 
 
 /**
- * Big integers in Js
+ * Index Signatures
  */
 
+// let say we want to declare a type for student with properties name, branch and awards. Award is an object containing objects of award but we dont know the name of awards (i.e. key)
 
-const safeInteger: number = Number.MAX_SAFE_INTEGER;
-
-let bigInt1 = BigInt(2345678998765423454);
-bigInt1 = bigInt1 + 5n;
-let bitInt2 = 234584392034985n;
-
-console.log(bigInt1);
-console.log(bitInt2);
-
-
-function returnParams(params) { // throw an error for noImplicitAny
-    return params;
-}
-function returnParams1(params: any) { // strictly typed to any. So no error
-    return params;
-}
-
-let x: unknown = 11;
-console.log(typeof x)
-
-
-function multipleByTwo(num: unknown) {
-    if (typeof num === "number") {
-        return 2 * num;
+type Student = {
+    name: string
+    branch: string
+    awards: {
+        [key: string]: {        //* here we're not sure about the key (i.e. name of award) but we know that it is string for sure
+            title: string
+            date: Date
+        }
     }
-
-    console.error("Please enter a valid Number")
 }
 
-console.log(multipleByTwo(3))
-console.log(multipleByTwo("hello"))
+//* Any object can have atmost one Index Signature and signature is only for string or number which is quite obvious
 
 
+/**
+ * Optional Properties and readonly property
+ */
 
-type Point = {
-    x: number;
-    y: number;
+type Mobile = {
+    name: string
+    price: number
+    resistence?: "ip 6.7" | "ip 6.5"  //* using `?` we mark this property as optional
+    readonly isbn: string  //* once this property is assigned it not be updated again
 }
 
-let p1: Point = { x: 11, y: 42 };
-let p2: Point = { x: 32, y: "sting" };
-let p3: Point = { x: 22, y: 44, z: 423 }
+let m1: Mobile = {
+    name: "hauwai",
+    price: 55000,
+    resistence: "ip 6.5",
+    isbn: "12345tfdsw234"
+}
+
+let m2: Mobile = {
+    name: "hauwai",
+    price: 55000,
+    isbn: "12345tfcxsw345"
+}
+
+m2.isbn = "2345trew2345tg"  // this will throws an error
+
+/**
+ * Union type on objects
+ */
+
+type Dog = {
+    name: string
+    barks: boolean
+    wags: boolean
+}
+
+type Cat = {
+    name: string
+    purrs: boolean
+}
+
+type DogAndCatUnion = Dog | Cat;
+
+//* Union is valid only in case in which the object should contain all properties of atleast one type
+
+let animal1: DogAndCatUnion = {  // this only contain Dog type
+    name: "Dog 1",
+    barks: true,
+    wags: true
+}
+
+let animal2: DogAndCatUnion = {  // this only contain Cat type
+    name: "Dog 2",
+    purrs: true
+}
+
+let animal3: DogAndCatUnion = {  // this contain all properties of Cat and one property of Dog
+    name: "Special Cat",
+    purrs: true,
+    wags: true
+}
 
 
-let age: string | number;
-age = 11;
-age = "11";
+/**
+ * Discriminating Unions
+ */
 
-function print(input: string | undefined) {
-    if (input) {
-        console.log(input)
+type NetworkLoadingState = {
+    state: "loading"
+}
+
+type NetworkFailedState = {
+    state: "failed"
+    code: number
+}
+
+type NetworkSuccessState = {
+    state: "success"
+    response: {
+        title: string
+        duration: number
+        summary: string
     }
-
-    console.log("No input");
 }
 
-
-type CustomDate = Date;
-type DateAssignment = CustomDate extends Date ? Date : undefined;
+type NetworkState = NetworkFailedState | NetworkLoadingState | NetworkSuccessState;
+function logger(state: NetworkState) {
+    switch (state.state) {
+        case "loading":
+            return "loading..."
+            break;
+        case "failed":
+            return `Error ${state.code}`
+            break;
+        case "success":
+            return `Success ${state.response.title}`
+            break;
+        default:
+            break;
+    }
+}
 
 
 /**
- * Never type
+ * Intersection Type
  */
 
-const throwAnError = (errMessage: string) => {
-    throw new Error(errMessage);
+//* in intersection type of T1 and T2, it should contain common properties and unique properties of both.
+
+type ElectricCar = {
+    name: string
+    color: string
+    fuel: "battery" | "petrol"
+    battery: number
 }
 
-
-/**
- * Type Casting
- */
-
-
-let firstName = <any>"Dikshant";
-let lastName = "Sharma" as any;
-
-
-type User {
-    name: string,
-    email: string,
+type PetrolCar = {
+    name: string
+    color: string
+    fuel: "petrol" | "battery"
+    tank: number
 }
 
-// This function returns an object user
-async function getUser() {
-    const response = await fetch("www.google.com");
-    const user = (await response.json()) as User;
-    return user;
-}
+type HybridCar = ElectricCar & PetrolCar;
 
-// but here the type of user1 is infered as Promise<Response>
-// so can use typecast as we are sure here that reponse of getUser is a user objext
-const user1 = getUser();
+let car1: HybridCar = {
+    name: "brezza",
+    color: "white",
+    fuel: "petrol",
+    tank: 30,
+    battery: 20
+}
