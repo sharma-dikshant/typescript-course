@@ -1,226 +1,231 @@
-let person: object = {
-    name: "Dikshant",
-    age: 20
-}
-
-
-let car: {} = {
-    model: "BMW",
-    color: "black",
-}
-
-person = []
-car = () => { }
-
-//* if we not annotating strict types to objects (or simpling annotating to Object type), person and car can be assigned to array, function, tuple. Which we dont want
-
-let book: {
-    movie: string,
-    rating: number,
-} = {
-    movie: "Godfather",
-    rating: 4
-}
-
-//* Above method of annotating is called object literals annotation
-
-book = []   // now this will throw an error
-
 /**
- * Using type aliasing
+ * Named Function
  */
 
-type Post = {
-    title: string
-    content: string
-    date: Date
-    author: string
+function Intro(name: string, age: number): string {
+  return `Hello, My name is ${name} and I'm ${age} years old`;
 }
 
-let post1: Post = {
-    title: "Init Post",
-    content: "first post",
-    date: new Date(),
-    author: "new User"
+/**
+ * Function expression
+ */
+
+const Intro2 = function (name: string, age: number): string {
+  return `Hello, My name is ${name} and I'm ${age} years old`;
+};
+
+/**
+ * Arrow function
+ */
+
+const Intro3 = (name: string, age: number): string => {
+  return `Hello, My name is ${name} and I'm ${age} years old`;
+};
+
+/**
+ * Optional Parameters
+ */
+
+function Intro4(name: string, age: number, country?: string): string {
+  return `Hello, My name is ${name} and I'm ${age} years old`;
 }
 
-let post2: Post = {
-    title: "2 Post",
-    content: "2 post",
-    date: new Date(),
-    author: "new User"
+Intro4("dhfasd", 343);
+Intro4("dhfasd", 343, "faihg");
+
+/**
+ * Custom types with function
+ */
+
+enum AgeUnit {
+  Years = "years",
+  Months = "months",
 }
 
+type Person = {
+  name: string;
+  age: number;
+  ageUnit: AgeUnit;
+};
 
-//* declaring types for nested objects
+function convertAgeToMonths(person: Person): Person {
+  if (person.ageUnit === AgeUnit.Years) {
+    person.age *= 12;
+    person.ageUnit = AgeUnit.Months;
+  }
+  return person;
+}
+
+let p: Person = {
+  name: "Dikshant",
+  age: 21,
+  ageUnit: AgeUnit.Years,
+};
+
+console.log(p);
+
+/**
+ * Function Call Signatures
+ */
+
+type Person2 = {
+  name: string;
+  age: number;
+  greet: (msg: string) => string; //* function call signature
+};
+
+let p1: Person2 = {
+  name: "Scott",
+  age: 39,
+  greet: (msg) => `${msg} ${p1.name}`,
+};
+
+console.log(p1.greet("Hello"));
+
+/**
+ * Type Inference with anonomous functions
+ */
+
+let students: string[] = ["x", "y", "z"];
+
+students.map((student) => {
+  //* here typescript correctly infered that student is a string
+  console.log(student);
+});
+students.map(function (student) {
+  //* here also typescript correctly infered that student is a string
+  console.log(student);
+});
+
+/**
+ * Void and Never Type
+ */
+
+function writeToDatabase(val: string): void {
+  //* this func does'nt return anything
+  console.log(val);
+}
+
+function throwError(err: string): void {
+  //* this function throws an eror thats why it is never type
+  throw new Error(err);
+}
+
+type check = never extends void ? true : false; // true
+
+/**
+ * Async functions
+ */
+
+async function fetchUserFromDB(id: number): Promise<any> {}
+
+const anotherAsyncFn = async (id: number): Promise<any> => {};
+
 type User = {
-    name: string
-    post: Post
-}
-// another way
-// type User = {
-//     name: string
-//     post: {
-//         title: string
-//         content: string
-//     }
-// }
+  name: string;
+  age: number;
+};
 
-let user1: User = {
-    name: "Dikshant",
-    post: post1
+async function fetchUser(id: number): Promise<User> {
+  return Promise.resolve({
+    name: "John",
+    age: 39,
+  });
 }
-
 
 /**
- * Index Signatures
+ * Rest Parameters and Arguments
  */
 
-// let say we want to declare a type for student with properties name, branch and awards. Award is an object containing objects of award but we dont know the name of awards (i.e. key)
+function multipleBy(by: number, ...numbers: number[]): number[] {
+  return numbers.map((n) => n * by);
+}
+
+console.log(multipleBy(2, 2, 3, 4, 5, 6, 6));
+console.log(multipleBy(6, 32, 2, 4));
+
+/**
+ * functions with tuples
+ */
+
+const arg = [1, 2];
+
+function calculateAngleWithX(...point: [number, number]): number {
+  return Math.atan2(point[1], point[0]);
+}
+
+console.log(calculateAngleWithX(1, 1));
+
+/**
+ * Parameter Desturcturing
+ */
 
 type Student = {
-    name: string
-    branch: string
-    awards: {
-        [key: string]: {        //* here we're not sure about the key (i.e. name of award) but we know that it is string for sure
-            title: string
-            date: Date
-        }
-    }
+  name: string;
+  branch: string;
+  age: number;
+  year: number;
+};
+
+function printStdDetails(std: Student): void {
+  console.log(std.name, std.branch, std.year, std.age);
 }
 
-//* Any object can have atmost one Index Signature and signature is only for string or number which is quite obvious
+function updateDetailsById(
+  record: Student[],
+  id: number,
+  { name, branch, age, year }: Student
+): void | Student {
+  if (id >= record.length) {
+    console.log("No Record found!");
+  }
 
+  record[id] = { name, branch, age, year };
+  return record[id];
+}
+
+let stds: Student[] = [
+  {
+    name: "Dikshant",
+    branch: "CSE",
+    age: 21,
+    year: 4,
+  },
+];
 
 /**
- * Optional Properties and readonly property
+ * Function Overloading
  */
 
-type Mobile = {
-    name: string
-    price: number
-    resistence?: "ip 6.7" | "ip 6.5"  //* using `?` we mark this property as optional
-    readonly isbn: string  //* once this property is assigned it not be updated again
+type Reservation = {
+  departureDate: Date;
+  returnDate: Date;
+  DepartureFrom: string;
+  Destination: string;
+};
+
+//* Overloaded type => 4 arg and 3 arg
+type Reserve = {
+  (
+    departureDate: Date,
+    returnDate: Date,
+    departureFrom: string,
+    destination: string
+  ): Reservation | never; //* Means that either this signature is used or not
+  (departureDate: Date, departureFrom: string, destination: string):
+    | Reservation
+    | never;
+};
+
+type DemoType = (n1: number, n2?: number) => Reservation;
+
+function demo(n1, n2): Reservation {
+  console.log(n1, n2);
+  return {
+    departureDate: new Date(),
+    returnDate: new Date(),
+    DepartureFrom: "Jaipur",
+    Destination: "LA",
+  };
 }
 
-let m1: Mobile = {
-    name: "hauwai",
-    price: 55000,
-    resistence: "ip 6.5",
-    isbn: "12345tfdsw234"
-}
-
-let m2: Mobile = {
-    name: "hauwai",
-    price: 55000,
-    isbn: "12345tfcxsw345"
-}
-
-m2.isbn = "2345trew2345tg"  // this will throws an error
-
-/**
- * Union type on objects
- */
-
-type Dog = {
-    name: string
-    barks: boolean
-    wags: boolean
-}
-
-type Cat = {
-    name: string
-    purrs: boolean
-}
-
-type DogAndCatUnion = Dog | Cat;
-
-//* Union is valid only in case in which the object should contain all properties of atleast one type
-
-let animal1: DogAndCatUnion = {  // this only contain Dog type
-    name: "Dog 1",
-    barks: true,
-    wags: true
-}
-
-let animal2: DogAndCatUnion = {  // this only contain Cat type
-    name: "Dog 2",
-    purrs: true
-}
-
-let animal3: DogAndCatUnion = {  // this contain all properties of Cat and one property of Dog
-    name: "Special Cat",
-    purrs: true,
-    wags: true
-}
-
-
-/**
- * Discriminating Unions
- */
-
-type NetworkLoadingState = {
-    state: "loading"
-}
-
-type NetworkFailedState = {
-    state: "failed"
-    code: number
-}
-
-type NetworkSuccessState = {
-    state: "success"
-    response: {
-        title: string
-        duration: number
-        summary: string
-    }
-}
-
-type NetworkState = NetworkFailedState | NetworkLoadingState | NetworkSuccessState;
-function logger(state: NetworkState) {
-    switch (state.state) {
-        case "loading":
-            return "loading..."
-            break;
-        case "failed":
-            return `Error ${state.code}`
-            break;
-        case "success":
-            return `Success ${state.response.title}`
-            break;
-        default:
-            break;
-    }
-}
-
-
-/**
- * Intersection Type
- */
-
-//* in intersection type of T1 and T2, it should contain common properties and unique properties of both.
-
-type ElectricCar = {
-    name: string
-    color: string
-    fuel: "battery" | "petrol"
-    battery: number
-}
-
-type PetrolCar = {
-    name: string
-    color: string
-    fuel: "petrol" | "battery"
-    tank: number
-}
-
-type HybridCar = ElectricCar & PetrolCar;
-
-let car1: HybridCar = {
-    name: "brezza",
-    color: "white",
-    fuel: "petrol",
-    tank: 30,
-    battery: 20
-}

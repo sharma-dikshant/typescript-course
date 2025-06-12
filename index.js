@@ -1,64 +1,116 @@
 "use strict";
-// const students = [
-//     {
-//         "name": "Dikshant",
-//         "score": 89,
-//     },
-//     {
-//         "name": "Dikshant",
-//         "score": 89,
-//     }
-// ]
-// for (const student of students) {
-//     console.log("name: ", student.name);
-//     console.log("score: ", student.grade);
-// }
-// @ ts-ignore
-// function add(a:number, b:number) {
-//     return a + b;
-// }
-// console.log(add(5, 4));
-// console.log(add("text", 3));
 /**
- * Big integers in Js
+ * Named Function
  */
-const safeInteger = Number.MAX_SAFE_INTEGER;
-let bigInt1 = BigInt(2345678998765423454);
-bigInt1 = bigInt1 + 5n;
-let bitInt2 = 234584392034985n;
-console.log(bigInt1);
-console.log(bitInt2);
-function returnParams(params) {
-    return params;
-}
-function returnParams1(params) {
-    return params;
-}
-let x = 11;
-console.log(typeof x);
-function multipleByTwo(num) {
-    if (typeof num === "number") {
-        return 2 * num;
-    }
-    console.error("Please enter a valid Number");
-}
-console.log(multipleByTwo(3));
-console.log(multipleByTwo("hello"));
-let p1 = { x: 11, y: 42 };
-let p2 = { x: 32, y: "sting" };
-let p3 = { x: 22, y: 44, z: 423 };
-let age;
-age = 11;
-age = "11";
-function print(input) {
-    if (input) {
-        console.log(input);
-    }
-    console.log("No input");
+function Intro(name, age) {
+    return `Hello, My name is ${name} and I'm ${age} years old`;
 }
 /**
- * Never type
+ * Function expression
  */
-const throwAnError = (errMessage) => {
-    throw new Error(errMessage);
+const Intro2 = function (name, age) {
+    return `Hello, My name is ${name} and I'm ${age} years old`;
 };
+/**
+ * Arrow function
+ */
+const Intro3 = (name, age) => {
+    return `Hello, My name is ${name} and I'm ${age} years old`;
+};
+/**
+ * Optional Parameters
+ */
+function Intro4(name, age, country) {
+    return `Hello, My name is ${name} and I'm ${age} years old`;
+}
+Intro4("dhfasd", 343);
+Intro4("dhfasd", 343, "faihg");
+/**
+ * Custom types with function
+ */
+var AgeUnit;
+(function (AgeUnit) {
+    AgeUnit["Years"] = "years";
+    AgeUnit["Months"] = "months";
+})(AgeUnit || (AgeUnit = {}));
+function convertAgeToMonths(person) {
+    if (person.ageUnit === AgeUnit.Years) {
+        person.age *= 12;
+        person.ageUnit = AgeUnit.Months;
+    }
+    return person;
+}
+let p = {
+    name: "Dikshant",
+    age: 21,
+    ageUnit: AgeUnit.Years
+};
+console.log(p);
+let p1 = {
+    name: "Scott",
+    age: 39,
+    greet: (msg) => `${msg} ${p1.name}`
+};
+console.log(p1.greet("Hello"));
+/**
+ * Type Inference with anonomous functions
+ */
+let students = ["x", "y", "z"];
+students.map((student) => {
+    console.log(student);
+});
+students.map(function (student) {
+    console.log(student);
+});
+/**
+ * Void and Never Type
+ */
+function writeToDatabase(val) {
+    console.log(val);
+}
+function throwError(err) {
+    throw new Error(err);
+}
+/**
+ * Async functions
+ */
+async function fetchUserFromDB(id) { }
+const anotherAsyncFn = async (id) => { };
+async function fetchUser(id) {
+    return Promise.resolve({
+        name: "John",
+        age: 39
+    });
+}
+/**
+ * Rest Parameters and Arguments
+ */
+function multipleBy(by, ...numbers) {
+    return numbers.map(n => n * by);
+}
+console.log(multipleBy(2, 2, 3, 4, 5, 6, 6));
+console.log(multipleBy(6, 32, 2, 4));
+/**
+ * functions with tuples
+ */
+const arg = [1, 2];
+function calculateAngleWithX(...point) {
+    return Math.atan2(point[1], point[0]);
+}
+console.log(calculateAngleWithX(1, 1));
+function printStdDetails(std) {
+    console.log(std.name, std.branch, std.year, std.age);
+}
+function updateDetailsById(record, id, { name, branch, age, year }) {
+    if (id >= record.length) {
+        console.log("No Record found!");
+    }
+    record[id] = { name, branch, age, year };
+    return record[id];
+}
+let stds = [{
+        name: "Dikshant",
+        branch: "CSE",
+        age: 21,
+        year: 4
+    }];
