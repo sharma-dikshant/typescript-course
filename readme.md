@@ -189,3 +189,6 @@ const throwAnError (message: string) : never => {
     throw new Error(message);
 }
 ```
+
+### Skiped Sections or topics:
+__Section 7 (Generics):__ lect. 68 onwards
