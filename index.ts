@@ -1,231 +1,179 @@
-/**
- * Named Function
- */
-
-function Intro(name: string, age: number): string {
-  return `Hello, My name is ${name} and I'm ${age} years old`;
+function returnParams(params: any): any {
+  return new Date();
 }
 
-/**
- * Function expression
- */
+let x = returnParams("helo");
+//* above function is a generic function as it can take params of any type. But the problem
+//* here is that let say we call the function by passing string and the function can return any parameter. As we have defined the return type of the function as any
 
-const Intro2 = function (name: string, age: number): string {
-  return `Hello, My name is ${name} and I'm ${age} years old`;
-};
+//* But lets say we want that the params of function and the return return type both should be same. Then generics come into play
 
-/**
- * Arrow function
- */
-
-const Intro3 = (name: string, age: number): string => {
-  return `Hello, My name is ${name} and I'm ${age} years old`;
-};
-
-/**
- * Optional Parameters
- */
-
-function Intro4(name: string, age: number, country?: string): string {
-  return `Hello, My name is ${name} and I'm ${age} years old`;
+function returnParams2<Type>(params: Type): Type {
+  return params;
 }
 
-Intro4("dhfasd", 343);
-Intro4("dhfasd", 343, "faihg");
+let y = returnParams2<string>("Hello");
+// let z = returnParams2<number>("Hello"); // this will throw an error
+
+// Generics with arrow function
+const returnParams3 = <T>(param: T): T => param;
+
+// Generics with function expression
+const returnParams4 = function<T>(params:T):string {
+  return "hello";
+}
+
+//Generics with type alias
+
+type FuncType = <T, V>(param: T) => V;
+
+
+// generics with function call signature
+type ObjType = {
+  myParams : <T, U>(param1: T, param2: U) => T | U;
+}
+
+
+// example
+
+function getFirstElement<T>(arr: T[]): T {
+  return arr[0];
+}
+
+let arr1 = [1,2,3,4]
+let arr2 = ["srting"]
+
+let firstEl = getFirstElement(arr1);
+let firstEl2 = getFirstElement<string>(arr2)
+
 
 /**
- * Custom types with function
+ * Different Type Aliases
  */
 
-enum AgeUnit {
-  Years = "years",
-  Months = "months",
+type ReturnFn = <T>(params: T) => T;
+type ReturnFn2<T> = (params: T) => T;   //* these both are different
+
+
+/**
+ * Generics and Constraints with Arrays
+ */
+
+type HasLength = {
+  length: number;
 }
+
+function logLength<T extends HasLength>(item: T): void {
+  console.log(item.length);
+}
+
+
+
+logLength([1,2,2,2,2])
+logLength("arr3")
+logLength({ name: "hello" })  // this will throw an error
+logLength({ name: "hello", length: 1 })  // this will not throw error because it has length property
+
+
+/**
+ * * Generics with objects
+ */
+
+type KeyValuePair<KeyType, ValueType> = {
+  key: KeyType;
+  value: ValueType
+}
+
+let stringNumberPair: KeyValuePair<string, number> = {
+  key: "hello",
+  value: 212
+}
+
+let numberStringPair: KeyValuePair<number, string[]> = {
+  key: 23,
+  value: ["a"]
+}
+
+
+// Constraints with Objects
+
+type HasId = {
+  id: number,
+}
+
+function printId<T extends HasId>(obj: T): void {
+  console.log(obj.id)
+}
+
+printId({ name: "Dikshant", id: 1 });
+printId({ name: "Dikshant"});     // throws an error because it does'nt have id
+
+
+/**
+ * * Keyof Operator
+ */
+
+type Events = {
+  key: number;
+  date: Date;
+  type: "indoor" | "outdoor"
+}
+
+type UnionOfKeys = keyof Events;  // "key" | "date" | "type"
+
+let e1: UnionOfKeys = "key";  //✅
+let e2: UnionOfKeys = "hello"; //❌
+
+
+/**
+ * Index Signatures
+ */
+
+type Numeric = {
+  [key: number]: string;
+}
+
+type NumericKeyOf = keyof Numeric;    //* the type of NumericKeyOf is number
+
+
+/**
+ * * Partial Types
+ */
 
 type Person = {
   name: string;
   age: number;
-  ageUnit: AgeUnit;
-};
-
-function convertAgeToMonths(person: Person): Person {
-  if (person.ageUnit === AgeUnit.Years) {
-    person.age *= 12;
-    person.ageUnit = AgeUnit.Months;
-  }
-  return person;
+  address: string;
 }
 
-let p: Person = {
-  name: "Dikshant",
-  age: 21,
-  ageUnit: AgeUnit.Years,
-};
+type PartialPerson = {
+  [K in keyof Person]?: Person[K] | null
+}
 
-console.log(p);
+
+let partialPerson: PartialPerson = { // this is Valid
+  name:"dikshant",
+}
+
 
 /**
- * Function Call Signatures
+ * Default values of Generics
  */
 
-type Person2 = {
-  name: string;
-  age: number;
-  greet: (msg: string) => string; //* function call signature
-};
+async function fetchData<T = any>(url: string): Promise<T> {
+  const response = await fetch("www.google.com");
+  const data = await response.json();
 
-let p1: Person2 = {
-  name: "Scott",
-  age: 39,
-  greet: (msg) => `${msg} ${p1.name}`,
-};
-
-console.log(p1.greet("Hello"));
-
-/**
- * Type Inference with anonomous functions
- */
-
-let students: string[] = ["x", "y", "z"];
-
-students.map((student) => {
-  //* here typescript correctly infered that student is a string
-  console.log(student);
-});
-students.map(function (student) {
-  //* here also typescript correctly infered that student is a string
-  console.log(student);
-});
-
-/**
- * Void and Never Type
- */
-
-function writeToDatabase(val: string): void {
-  //* this func does'nt return anything
-  console.log(val);
+  return data;
 }
 
-function throwError(err: string): void {
-  //* this function throws an eror thats why it is never type
-  throw new Error(err);
+
+type Post = {
+  title: string;
+  author: string;
+  date: Date
 }
 
-type check = never extends void ? true : false; // true
-
-/**
- * Async functions
- */
-
-async function fetchUserFromDB(id: number): Promise<any> {}
-
-const anotherAsyncFn = async (id: number): Promise<any> => {};
-
-type User = {
-  name: string;
-  age: number;
-};
-
-async function fetchUser(id: number): Promise<User> {
-  return Promise.resolve({
-    name: "John",
-    age: 39,
-  });
-}
-
-/**
- * Rest Parameters and Arguments
- */
-
-function multipleBy(by: number, ...numbers: number[]): number[] {
-  return numbers.map((n) => n * by);
-}
-
-console.log(multipleBy(2, 2, 3, 4, 5, 6, 6));
-console.log(multipleBy(6, 32, 2, 4));
-
-/**
- * functions with tuples
- */
-
-const arg = [1, 2];
-
-function calculateAngleWithX(...point: [number, number]): number {
-  return Math.atan2(point[1], point[0]);
-}
-
-console.log(calculateAngleWithX(1, 1));
-
-/**
- * Parameter Desturcturing
- */
-
-type Student = {
-  name: string;
-  branch: string;
-  age: number;
-  year: number;
-};
-
-function printStdDetails(std: Student): void {
-  console.log(std.name, std.branch, std.year, std.age);
-}
-
-function updateDetailsById(
-  record: Student[],
-  id: number,
-  { name, branch, age, year }: Student
-): void | Student {
-  if (id >= record.length) {
-    console.log("No Record found!");
-  }
-
-  record[id] = { name, branch, age, year };
-  return record[id];
-}
-
-let stds: Student[] = [
-  {
-    name: "Dikshant",
-    branch: "CSE",
-    age: 21,
-    year: 4,
-  },
-];
-
-/**
- * Function Overloading
- */
-
-type Reservation = {
-  departureDate: Date;
-  returnDate: Date;
-  DepartureFrom: string;
-  Destination: string;
-};
-
-//* Overloaded type => 4 arg and 3 arg
-type Reserve = {
-  (
-    departureDate: Date,
-    returnDate: Date,
-    departureFrom: string,
-    destination: string
-  ): Reservation | never; //* Means that either this signature is used or not
-  (departureDate: Date, departureFrom: string, destination: string):
-    | Reservation
-    | never;
-};
-
-type DemoType = (n1: number, n2?: number) => Reservation;
-
-function demo(n1, n2): Reservation {
-  console.log(n1, n2);
-  return {
-    departureDate: new Date(),
-    returnDate: new Date(),
-    DepartureFrom: "Jaipur",
-    Destination: "LA",
-  };
-}
+let d1 = fetchData("www.ggo.com");
+let d2 = fetchData<Post>("www.ggogl.com");
 

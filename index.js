@@ -1,116 +1,62 @@
 "use strict";
-/**
- * Named Function
- */
-function Intro(name, age) {
-    return `Hello, My name is ${name} and I'm ${age} years old`;
+function returnParams(params) {
+    return new Date();
 }
-/**
- * Function expression
- */
-const Intro2 = function (name, age) {
-    return `Hello, My name is ${name} and I'm ${age} years old`;
+let x = returnParams("helo");
+//* above function is a generic function as it can take params of any type. But the problem
+//* here is that let say we call the function by passing string and the function can return any parameter. As we have defined the return type of the function as any
+//* But lets say we want that the params of function and the return return type both should be same. Then generics come into play
+function returnParams2(params) {
+    return params;
+}
+let y = returnParams2("Hello");
+// let z = returnParams2<number>("Hello"); // this will throw an error
+// Generics with arrow function
+const returnParams3 = (param) => param;
+// Generics with function expression
+const returnParams4 = function (params) {
+    return "hello";
+};
+// example
+function getFirstElement(arr) {
+    return arr[0];
+}
+let arr1 = [1, 2, 3, 4];
+let arr2 = ["srting"];
+let firstEl = getFirstElement(arr1);
+let firstEl2 = getFirstElement(arr2);
+function logLength(item) {
+    console.log(item.length);
+}
+logLength([1, 2, 2, 2, 2]);
+logLength("arr3");
+logLength({ name: "hello" }); // this will throw an error
+logLength({ name: "hello", length: 1 }); // this will not throw error because it has length property
+let stringNumberPair = {
+    key: "hello",
+    value: 212
+};
+let numberStringPair = {
+    key: 23,
+    value: ["a"]
+};
+function printId(obj) {
+    console.log(obj.id);
+}
+printId({ name: "Dikshant", id: 1 });
+printId({ name: "Dikshant" }); // throws an error because it does'nt have id
+let e1 = "key"; //✅
+let e2 = "hello"; //❌
+let partialPerson = {
+    name: "dikshant",
 };
 /**
- * Arrow function
+ * Default values of Generics
  */
-const Intro3 = (name, age) => {
-    return `Hello, My name is ${name} and I'm ${age} years old`;
-};
-/**
- * Optional Parameters
- */
-function Intro4(name, age, country) {
-    return `Hello, My name is ${name} and I'm ${age} years old`;
+async function fetchData(url) {
+    const response = await fetch("www.google.com");
+    const data = await response.json();
+    return data;
 }
-Intro4("dhfasd", 343);
-Intro4("dhfasd", 343, "faihg");
-/**
- * Custom types with function
- */
-var AgeUnit;
-(function (AgeUnit) {
-    AgeUnit["Years"] = "years";
-    AgeUnit["Months"] = "months";
-})(AgeUnit || (AgeUnit = {}));
-function convertAgeToMonths(person) {
-    if (person.ageUnit === AgeUnit.Years) {
-        person.age *= 12;
-        person.ageUnit = AgeUnit.Months;
-    }
-    return person;
-}
-let p = {
-    name: "Dikshant",
-    age: 21,
-    ageUnit: AgeUnit.Years
-};
-console.log(p);
-let p1 = {
-    name: "Scott",
-    age: 39,
-    greet: (msg) => `${msg} ${p1.name}`
-};
-console.log(p1.greet("Hello"));
-/**
- * Type Inference with anonomous functions
- */
-let students = ["x", "y", "z"];
-students.map((student) => {
-    console.log(student);
-});
-students.map(function (student) {
-    console.log(student);
-});
-/**
- * Void and Never Type
- */
-function writeToDatabase(val) {
-    console.log(val);
-}
-function throwError(err) {
-    throw new Error(err);
-}
-/**
- * Async functions
- */
-async function fetchUserFromDB(id) { }
-const anotherAsyncFn = async (id) => { };
-async function fetchUser(id) {
-    return Promise.resolve({
-        name: "John",
-        age: 39
-    });
-}
-/**
- * Rest Parameters and Arguments
- */
-function multipleBy(by, ...numbers) {
-    return numbers.map(n => n * by);
-}
-console.log(multipleBy(2, 2, 3, 4, 5, 6, 6));
-console.log(multipleBy(6, 32, 2, 4));
-/**
- * functions with tuples
- */
-const arg = [1, 2];
-function calculateAngleWithX(...point) {
-    return Math.atan2(point[1], point[0]);
-}
-console.log(calculateAngleWithX(1, 1));
-function printStdDetails(std) {
-    console.log(std.name, std.branch, std.year, std.age);
-}
-function updateDetailsById(record, id, { name, branch, age, year }) {
-    if (id >= record.length) {
-        console.log("No Record found!");
-    }
-    record[id] = { name, branch, age, year };
-    return record[id];
-}
-let stds = [{
-        name: "Dikshant",
-        branch: "CSE",
-        age: 21,
-        year: 4
-    }];
+let d1 = fetchData("www.ggo.com");
+let d2 = fetchData("www.ggogl.com");
