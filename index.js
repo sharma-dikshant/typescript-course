@@ -1,62 +1,128 @@
 "use strict";
-function returnParams(params) {
-    return new Date();
-}
-let x = returnParams("helo");
-//* above function is a generic function as it can take params of any type. But the problem
-//* here is that let say we call the function by passing string and the function can return any parameter. As we have defined the return type of the function as any
-//* But lets say we want that the params of function and the return return type both should be same. Then generics come into play
-function returnParams2(params) {
-    return params;
-}
-let y = returnParams2("Hello");
-// let z = returnParams2<number>("Hello"); // this will throw an error
-// Generics with arrow function
-const returnParams3 = (param) => param;
-// Generics with function expression
-const returnParams4 = function (params) {
-    return "hello";
-};
-// example
-function getFirstElement(arr) {
-    return arr[0];
-}
-let arr1 = [1, 2, 3, 4];
-let arr2 = ["srting"];
-let firstEl = getFirstElement(arr1);
-let firstEl2 = getFirstElement(arr2);
-function logLength(item) {
-    console.log(item.length);
-}
-logLength([1, 2, 2, 2, 2]);
-logLength("arr3");
-logLength({ name: "hello" }); // this will throw an error
-logLength({ name: "hello", length: 1 }); // this will not throw error because it has length property
-let stringNumberPair = {
-    key: "hello",
-    value: 212
-};
-let numberStringPair = {
-    key: 23,
-    value: ["a"]
-};
-function printId(obj) {
-    console.log(obj.id);
-}
-printId({ name: "Dikshant", id: 1 });
-printId({ name: "Dikshant" }); // throws an error because it does'nt have id
-let e1 = "key"; //✅
-let e2 = "hello"; //❌
-let partialPerson = {
-    name: "dikshant",
-};
 /**
- * Default values of Generics
+ * *Classes
  */
-async function fetchData(url) {
-    const response = await fetch("www.google.com");
-    const data = await response.json();
-    return data;
+// class User {
+//     name = "Dikshant"
+//     email = "hello@gmail.com"
+//     greet() {
+//         return this.name;
+//     }
+// }
+// const user1 = new User();
+// console.log(user1)
+class User {
+    constructor(name, email, lastname, phone) {
+        this.name = name;
+        this.email = email;
+        this.lastname = lastname;
+        this.phone = phone;
+    }
+    greet() {
+        return `Hello! ${this.name}`;
+    }
 }
-let d1 = fetchData("www.ggo.com");
-let d2 = fetchData("www.ggogl.com");
+class Admin extends User {
+    constructor(name, email, department, lastname) {
+        super(name, email, lastname);
+        this.isAdmin = true;
+        this.department = department;
+    }
+    printName() {
+        console.log(this.name);
+    }
+}
+const user1 = new User("Dikshant", "test@gmail.com");
+const user2 = new User("Dikshant", "test@gmail.com", "Sharma");
+const admin = new Admin("Alice", "alice@admin.io", "sales", "Doe");
+console.log(user1.greet());
+console.log(user2);
+console.log(admin);
+// user1.email = "hert4o" // cant do this
+//* Typescript treated classes as types
+/**
+ * * Generics with classes
+ */
+class Box {
+    constructor(value) {
+        this._value = value;
+    }
+    get value() {
+        return this._value;
+    }
+    set value(newValue) {
+        this._value = newValue;
+    }
+}
+let numberBox = new Box(11);
+let HelloBox = new Box("hello");
+console.log(HelloBox.value);
+HelloBox.value = "shello";
+console.log(HelloBox.value);
+class Repository {
+    constructor() {
+        this._items = [];
+    }
+    add(item) {
+        this._items.push(item);
+    }
+    getItemById(id) {
+        return this._items.find(item => item.id === id);
+    }
+    deleteItemById(id) {
+        this._items = this._items.filter(item => item.id !== id);
+    }
+    updateItemById(id, newItem) {
+        const idx = this._items.findIndex(item => item.id === id);
+        if (idx != -1) {
+            this._items[idx] = newItem;
+            return newItem;
+        }
+        return undefined;
+    }
+    getAllItem() {
+        return this._items;
+    }
+}
+const repo1 = new Repository();
+const repo2 = new Repository();
+repo1.add({
+    name: "Dikshant",
+    email: "hello@gmail.com",
+    id: 1,
+    age: 21
+});
+repo2.add({
+    id: 1,
+    title: "Harry Potter",
+    ISBN: 1234567891234
+});
+console.log(repo1.getItemById(1));
+/**
+ * * Mixins
+ */
+//  this is an constructor
+function TimeStamp(Base) {
+    return class extends Base {
+        constructor() {
+            super(...arguments);
+            this.timestamp = new Date();
+        }
+        getTimestamp() {
+            return this.timestamp;
+        }
+    };
+}
+class Booking {
+    constructor(name) {
+        this.name = name;
+    }
+}
+class BookingWithTimestamp extends TimeStamp(Booking) {
+    constructor(name, hotel) {
+        super(name);
+        this.hotel = hotel;
+        this.hotel = hotel;
+    }
+}
+console.log(BookingWithTimestamp);
