@@ -1,128 +1,90 @@
 "use strict";
-/**
- * *Classes
- */
-// class User {
-//     name = "Dikshant"
-//     email = "hello@gmail.com"
-//     greet() {
-//         return this.name;
-//     }
-// }
-// const user1 = new User();
-// console.log(user1)
-class User {
-    constructor(name, email, lastname, phone) {
-        this.name = name;
-        this.email = email;
-        this.lastname = lastname;
-        this.phone = phone;
-    }
-    greet() {
-        return `Hello! ${this.name}`;
-    }
-}
-class Admin extends User {
-    constructor(name, email, department, lastname) {
-        super(name, email, lastname);
-        this.isAdmin = true;
-        this.department = department;
-    }
-    printName() {
-        console.log(this.name);
-    }
-}
-const user1 = new User("Dikshant", "test@gmail.com");
-const user2 = new User("Dikshant", "test@gmail.com", "Sharma");
-const admin = new Admin("Alice", "alice@admin.io", "sales", "Doe");
-console.log(user1.greet());
-console.log(user2);
-console.log(admin);
-// user1.email = "hert4o" // cant do this
-//* Typescript treated classes as types
-/**
- * * Generics with classes
- */
-class Box {
-    constructor(value) {
-        this._value = value;
-    }
-    get value() {
-        return this._value;
-    }
-    set value(newValue) {
-        this._value = newValue;
-    }
-}
-let numberBox = new Box(11);
-let HelloBox = new Box("hello");
-console.log(HelloBox.value);
-HelloBox.value = "shello";
-console.log(HelloBox.value);
-class Repository {
-    constructor() {
-        this._items = [];
-    }
-    add(item) {
-        this._items.push(item);
-    }
-    getItemById(id) {
-        return this._items.find(item => item.id === id);
-    }
-    deleteItemById(id) {
-        this._items = this._items.filter(item => item.id !== id);
-    }
-    updateItemById(id, newItem) {
-        const idx = this._items.findIndex(item => item.id === id);
-        if (idx != -1) {
-            this._items[idx] = newItem;
-            return newItem;
-        }
-        return undefined;
-    }
-    getAllItem() {
-        return this._items;
-    }
-}
-const repo1 = new Repository();
-const repo2 = new Repository();
-repo1.add({
+const user1 = {
     name: "Dikshant",
-    email: "hello@gmail.com",
-    id: 1,
+    email: "abc@gmail.com",
+    phone: 1234567890,
     age: 21
-});
-repo2.add({
-    id: 1,
-    title: "Harry Potter",
-    ISBN: 1234567891234
-});
-console.log(repo1.getItemById(1));
+};
+const userWithAdd = {
+    address: "India",
+    name: "dikshant",
+    email: "abc@gmail.com",
+    phone: 1234593,
+    age: 21
+};
 /**
- * * Mixins
+ * * Inheriting from multiple Interfaces
  */
-//  this is an constructor
-function TimeStamp(Base) {
-    return class extends Base {
-        constructor() {
-            super(...arguments);
-            this.timestamp = new Date();
-        }
-        getTimestamp() {
-            return this.timestamp;
-        }
-    };
-}
-class Booking {
-    constructor(name) {
-        this.name = name;
+var Roles;
+(function (Roles) {
+    Roles["ADMIN"] = "admin";
+    Roles["WRITER"] = "writer";
+    Roles["EDITOR"] = "editor";
+})(Roles || (Roles = {}));
+var AppPermissions;
+(function (AppPermissions) {
+    AppPermissions["WRITE"] = "write";
+    AppPermissions["READ"] = "read";
+    AppPermissions["EXECUTE"] = "execute";
+})(AppPermissions || (AppPermissions = {}));
+const bob = {
+    name: "Bob",
+    email: "bob@gmail.com",
+    phone: 123452,
+    age: 43,
+    department: "sales",
+    role: Roles.ADMIN,
+    permission: [AppPermissions.EXECUTE, AppPermissions.READ, AppPermissions.WRITE]
+};
+// console.log(bob)
+/**
+ * * Generics with Interfaces
+ */
+var AutomobileType;
+(function (AutomobileType) {
+    AutomobileType["car"] = "car";
+    AutomobileType["bike"] = "bike";
+    AutomobileType["truck"] = "truck";
+})(AutomobileType || (AutomobileType = {}));
+var AutomobileBrand;
+(function (AutomobileBrand) {
+    AutomobileBrand["honda"] = "honda";
+    AutomobileBrand["maruti"] = "maruti";
+    AutomobileBrand["toyota"] = "toyota";
+})(AutomobileBrand || (AutomobileBrand = {}));
+var AutomobileColor;
+(function (AutomobileColor) {
+    AutomobileColor["black"] = "black";
+    AutomobileColor["white"] = "white";
+})(AutomobileColor || (AutomobileColor = {}));
+const brezza = {
+    type: AutomobileType.car,
+    brand: AutomobileBrand.maruti,
+    color: [AutomobileColor.white, AutomobileColor.black],
+    description: "this is a brezza"
+};
+const sedan = {
+    type: AutomobileType.car,
+    brand: AutomobileBrand.maruti,
+    color: [112, 1312],
+    description: "this is a brezza"
+};
+console.log(brezza);
+class Car {
+    constructor(brand, color, description) {
+        this.brand = brand;
+        this.color = color;
+        this.description = description;
+        this.type = "car";
     }
 }
-class BookingWithTimestamp extends TimeStamp(Booking) {
-    constructor(name, hotel) {
-        super(name);
-        this.hotel = hotel;
-        this.hotel = hotel;
-    }
-}
-console.log(BookingWithTimestamp);
+const suv = new Car(AutomobileBrand.toyota, [AutomobileColor.black, AutomobileColor.white], "this is an SUV");
+console.log(suv);
+const joe = {
+    name: "Joe Doe",
+    isAdmin: true
+};
+const p1 = {
+    name: "DIkshant",
+    email: "abc@gmail.com"
+};
