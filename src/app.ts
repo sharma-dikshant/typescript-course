@@ -1,156 +1,130 @@
-//* Awaited<T>
-//example 1
-const promise : Promise<string> = new Promise((res, rej) => {
-    setTimeout(() => {
-        res("Hello")
-    }, 1000);
-})
+// simple typeguard in javascript
 
-type AwaitedType = Awaited<typeof promise>
+/*
+function convertNumberToString (number) {
+    if (typeof number !== "number") {
+        console.log("Please enter a valid number");
+        return;
+    }
 
-//example 2
+    return number.toString();
+}
+*/
 
-async function example () {
-    const response = new Promise((res, rej) => {
-        setTimeout(() => {
-            res(1)
-        }, 1000);
-    })
-
-    type ResponseDataType = Awaited<typeof response>;
-    const data: ResponseDataType = await response;
-
-    console.log(typeof data)
+const user = {
+    name:"dikshant",
+    age: 21
 }
 
-example();
+let anotherUser: typeof user;
 
 
-
-//* Record<Key, Value>
-
-type Roles = "author" | "editor" | "researcher"
-
-interface User {
-    name: string;
-    email: string;
-    age: number;
-}
-
-interface Article {
-    title: string;
-    content: string;
-    contributors: Record<Roles, User>
-}
-
-const article: Article = {
-    title: "dja gerigtrgf erge",
-    content: "ierhrgenr roih freigae reag reg erg efwdgy  dfgehg",
-    contributors: {
-        author: {name: "John", email: "John@email.com", age: 32},
-        editor: {name: "Rohit", email: "rohit@email.com", age: 21},
-        researcher: {name: "Pavan", email: "pavan@email.com", age: 23}
+//! Arrays and nulls is treated as objects in JavaScript
+function printStrings (args: string | string[] | null) {
+    // if (typeof args === 'object') {
+    if (args && typeof args === 'object') {
+        for (const s of args) {
+            console.log(s)
+        }
+    } else if (typeof args === 'string') {
+        console.log(args)
+    } else {
+        console.log("Please enter a valid string")
     }
 }
 
-interface Person {
+//* Truthiness Narrowing
+
+//* null, undefined, false, 0, NaN, '' -> these all are treated as falsy values in Js & Ts
+
+type Person = {
     name: string;
-    email: string;
-    age: number;
+    age?: number;
 }
 
-type NameAndAge = Pick<Person, "name" | "age">
+function printAge (person: Person) {
+    if (person.age) {
+        console.log(person.age);
+    } else {
+        console.log("age is unknown")
+    }
+}
 
-const person:NameAndAge = {
-    name: "Dikshant",
-    age: 23
+//* Equality Narrowing
+
+/**
+ * ===
+ * !==
+ * ==
+ * !=
+ */
+
+type Circle = {
+    kind: "circle";
+    radius: number;
+}
+
+type Square = {
+    kind: "square";
+    side: number;
+}
+
+type Shape = Circle | Square;
+
+function calculateArea(shape: Shape) {
+    if (shape.kind === 'circle') {
+        return Math.PI * shape.radius ** 2;
+    } else {
+        return shape.side ** 2;
+    }
+}
+
+//* in operator narrowing
+
+function calculateArea2(shape: Shape) {
+    if ("radius" in shape) {
+        return Math.PI * shape.radius ** 2;
+    } else {
+        return shape.side ** 2;
+    }
+}
+
+//* instanceOf typeguard
+
+abstract class Product {
+    constructor(public name: string, public price: number) {}
+    abstract getPrice():number {};
 }
 
 
-//*  Omit<OldType, Keys>
+class Electronics extends Product {
+    constructor(name:string, price: number, public warrenty: number) {
+        super(name, price);
+    }
 
-interface NewUser {
-    name: string;
-    email: string;
-    age: number;
-    password: string;
-    passwordConfirm: string;
-    _id: string;
+    getPrice(): number {
+        return this.price;
+    }
 }
 
-type LimitedUser = Omit<NewUser, "password" | "passwordConfirm" | "_id">
+class Clothing extends Product {
+    constructor (name: string, price: number, public size: number, public material: string) {
+        super(name, price);
+    }
 
-//* Partial<Type>
-
-function updateUser (user: NewUser, updates: Partial<NewUser>): NewUser {
-    return { ...user, ...updates }
-}
- 
-
-// lets test it
-const p1: NewUser = {
-    name: "dikshant",
-    age: 21,
-    email: "dikshant@email.com",
-    password: 'tfdsghtrffgrt',
-    passwordConfirm: 'tfdsghtrffgrt',
-    _id: "23retdf3rev"
+    getPrice(): number {
+        return this.price;
+    }
 }
 
-const updatedP1: NewUser = updateUser(p1, {name: "Dikshant Sharma"});
-console.log(updatedP1)
 
-//* Required<Type>
+function printProduct(product: Product) {
+    console.log(`Name = ${product.name}`);
+    console.log(`Price = ${product.price}`);
 
-// Let say we want to register the student to our platform with only name and email required. But as soon as student try to login, password and studentId are also needed
-
-interface Student {
-    name: string;
-    email: string;
-    password?: string;
-    studentId?: string;
+    if (product instanceof Electronics) {
+        console.log(`Warrenty = ${product.warrenty}`);
+    } else if (product instanceof Clothing) {
+        console.log(`Material = ${product.material}`)
+    }
 }
-
-type RegisteredUser = Required<Pick<Student, "name" | "email" | "password" | "studentId">>
-
-
-//* String manipulation Utility Types
-
-type City = "Delhi" | "mumbai" | "jaipuR"
-
-type LowercaseCity = Lowercase<City>
-type UppercaseCity = Uppercase<City>
-type CapitalizeCity = Capitalize<City>
-type UnCapitalizeCity = Uncapitalize<City>
-
-
-
-// Satisfies Operator
-
-type Properties = "red" | "green" | "blue";
-type RGB = [red: number, green: number, blue: number];
-
-/*
-const color: Record<Properties, RGB | string> = {
-    red: [255, 0, 0],
-    green: "#00ff00",
-    blue: [255, 255, 0]
-}
-
-color.green.toLowerCase();  //* this will throw error
-
-if (typeof color.green === "string") {  //* this will not throw error
-    color.green.toUpperCase();
-}
-
-*/
-
-//* but if we strict type color using satisfies operator then it will automatically checks all properties of color whether it is of type RGB or string
-
-const color = {
-    red: [255, 0, 0],
-    green: "#00ff00",
-    blue: [255, 255, 0]
-} satisfies Record<Properties, RGB | string>
-
-color.green.toLocaleLowerCase();    // now this will not throw error
