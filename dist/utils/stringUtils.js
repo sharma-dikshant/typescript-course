@@ -1,13 +1,13 @@
 "use strict";
-var StringUtils;
-(function (StringUtils) {
-    function add(a, b) {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.StringUtils = void 0;
+class StringUtils {
+    static add(a, b) {
         return a + b;
     }
-    StringUtils.add = add;
-    function subtract(a, b) {
+    static subtract(a, b) {
         return a.replace(b, '');
     }
-    StringUtils.subtract = subtract;
-})(StringUtils || (StringUtils = {}));
+}
+exports.StringUtils = StringUtils;
 //# sourceMappingURL=stringUtils.js.map

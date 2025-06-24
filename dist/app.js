@@ -1,28 +1,14 @@
 "use strict";
-var MathUtils;
-(function (MathUtils) {
-    function add(a, b) {
-        return a + b;
-    }
-    MathUtils.add = add;
-    function subtract(a, b) {
-        return a + b;
-    }
-    MathUtils.subtract = subtract;
-})(MathUtils || (MathUtils = {}));
-var StringUtils;
-(function (StringUtils) {
-    function add(a, b) {
-        return a + b;
-    }
-    StringUtils.add = add;
-    function subtract(a, b) {
-        return a.replace(b, '');
-    }
-    StringUtils.subtract = subtract;
-})(StringUtils || (StringUtils = {}));
-/// <reference path="./utils/mathUtils.ts"/>
-/// <reference path="./utils/stringUtils.ts"/>
-let x = MathUtils.add(1, 3);
-let y = StringUtils.add("refdgt", "ergh");
+Object.defineProperty(exports, "__esModule", { value: true });
+const mathUtils_js_1 = require("./utils/mathUtils.js");
+const stringUtils_js_1 = require("./utils/stringUtils.js");
+let x = mathUtils_js_1.MathUtils.add(1, 3);
+let y = stringUtils_js_1.StringUtils.add("refdgt", "ergh");
+let s = {
+    name: "Dikshant",
+    age: 20,
+    email: "hello@email.com"
+};
+console.log(s);
+console.log(x, y);
 //# sourceMappingURL=app.js.map

@@ -1,13 +1,13 @@
 "use strict";
-var MathUtils;
-(function (MathUtils) {
-    function add(a, b) {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.MathUtils = void 0;
+class MathUtils {
+    static add(a, b) {
         return a + b;
     }
-    MathUtils.add = add;
-    function subtract(a, b) {
+    static subtract(a, b) {
         return a + b;
     }
-    MathUtils.subtract = subtract;
-})(MathUtils || (MathUtils = {}));
+}
+exports.MathUtils = MathUtils;
 //# sourceMappingURL=mathUtils.js.map

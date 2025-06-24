@@ -1,10 +1,10 @@
-namespace StringUtils {
+export class StringUtils {
     
-    export function add(a: string, b: string):string {
+    static add(a: string, b: string):string {
         return a + b;
     }
     
-    export function subtract(a: string, b: string): string {
+    static subtract(a: string, b: string): string {
         return a.replace(b, '');
     }
 }

@@ -1,10 +1,10 @@
-namespace MathUtils {
+export class MathUtils {
 
-    export function add(a:number, b: number): number {
+    static add(a:number, b: number): number {
         return a + b;
     }
     
-    export function subtract(a: number, b: number): number {
+    static subtract(a: number, b: number): number {
         return a + b;
     }
 }
