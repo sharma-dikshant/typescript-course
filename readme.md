@@ -1,13 +1,6 @@
-### Simple Typguard in JavaScript
-This is a simple type guard implementation in JavaScript that checks if a value is of a specific type. It can be used to ensure that variables are of the expected type before performing operations on them.
-```js
-function convertNumbertoString(number) {
-  if (typeof number !== 'number') {
-    throw new TypeError('Expected a number');
-  }
-  return number.toString();
-}
-```
-
-__point:__ `array` and `null` in js is treated as an object.      
-__point:__ `null`, `undefined`, `NaN`, `""`, `false`, `0` are treated as falsy values in `js` and `ts`
+## Namespaces
+__Namespaces are used with declaration files which are used to built js libary which are also compatiable with typescript.__
+![1](./public/Udemy%20ScreenShot%202025-06-24%2008-00-16.jpeg)
+![2](./public/Udemy%20ScreenShot%202025-06-24%2008-01-07.jpeg)
+![3](./public/Udemy%20ScreenShot%202025-06-24%2008-03-57.jpeg)
+![4](./public//Udemy%20ScreenShot%202025-06-24%2008-04-19.jpeg)
