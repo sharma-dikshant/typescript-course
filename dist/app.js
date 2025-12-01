@@ -34,29 +34,44 @@ var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, 
     if (target) Object.defineProperty(target, contextIn.name, descriptor);
     done = true;
 };
+var __setFunctionName = (this && this.__setFunctionName) || function (f, name, prefix) {
+    if (typeof name === "symbol") name = name.description ? "[".concat(name.description, "]") : "";
+    return Object.defineProperty(f, "name", { configurable: true, value: prefix ? "".concat(prefix, " ", name) : name });
+};
 // decorators is a special kind of declarations that can modify classes, methods, properties, parameters at design time;
 function methodLogger(target, context) {
     console.log(target);
     console.log(context);
 }
+function classDecorator(target, context) {
+    console.log(target);
+    console.log(context);
+}
 let User = (() => {
-    var _a;
+    let _classDecorators = [classDecorator];
+    let _classDescriptor;
+    let _classExtraInitializers = [];
+    let _classThis;
     let _instanceExtraInitializers = [];
     let _greet_decorators;
-    return _a = class User {
-            constructor(name) {
-                this.name = (__runInitializers(this, _instanceExtraInitializers), name);
-            }
-            greet() {
-                console.log(`Hello this is ${this.name}`);
-            }
-        },
-        (() => {
-            const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(null) : void 0;
-            _greet_decorators = [methodLogger];
-            __esDecorate(_a, null, _greet_decorators, { kind: "method", name: "greet", static: false, private: false, access: { has: obj => "greet" in obj, get: obj => obj.greet }, metadata: _metadata }, null, _instanceExtraInitializers);
-            if (_metadata) Object.defineProperty(_a, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
-        })(),
-        _a;
+    var User = _classThis = class {
+        constructor(name) {
+            this.name = (__runInitializers(this, _instanceExtraInitializers), name);
+        }
+        greet() {
+            console.log(`Hello this is ${this.name}`);
+        }
+    };
+    __setFunctionName(_classThis, "User");
+    (() => {
+        const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(null) : void 0;
+        _greet_decorators = [methodLogger];
+        __esDecorate(_classThis, null, _greet_decorators, { kind: "method", name: "greet", static: false, private: false, access: { has: obj => "greet" in obj, get: obj => obj.greet }, metadata: _metadata }, null, _instanceExtraInitializers);
+        __esDecorate(null, _classDescriptor = { value: _classThis }, _classDecorators, { kind: "class", name: _classThis.name, metadata: _metadata }, null, _classExtraInitializers);
+        User = _classThis = _classDescriptor.value;
+        if (_metadata) Object.defineProperty(_classThis, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
+        __runInitializers(_classThis, _classExtraInitializers);
+    })();
+    return User = _classThis;
 })();
 //# sourceMappingURL=app.js.map

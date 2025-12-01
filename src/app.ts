@@ -7,7 +7,12 @@ function methodLogger(target: any, context: any) {
     console.log(context);
 }
  
+function classDecorator(target: any, context: any) {
+    console.log(target);
+    console.log(context);
+}
 
+@classDecorator
 class User {
     constructor(public name: string) {}
 
