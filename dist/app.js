@@ -35,16 +35,17 @@ var __esDecorate = (this && this.__esDecorate) || function (ctor, descriptorIn, 
     done = true;
 };
 // decorators is a special kind of declarations that can modify classes, methods, properties, parameters at design time;
-function methodLogger(target, context) {
-    // console.log('method decorators');
-    function replacement(...args) {
-        // console.log(this);
-        // console.log(args);
-        console.log('invocation started');
-        const res = target.call(this, ...args);
-        console.log("invocation ended");
-    }
-    return replacement;
+/** Decorator Factory function */
+function methodLogger(prefix) {
+    // decorator function
+    return function (target, context) {
+        // replacement function
+        return function (...args) {
+            console.log(`${prefix} invocation started`);
+            const res = target.call(this, ...args);
+            console.log(`${prefix} invocation ended`);
+        };
+    };
 }
 let User = (() => {
     var _a;
@@ -60,7 +61,7 @@ let User = (() => {
         },
         (() => {
             const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(null) : void 0;
-            _greet_decorators = [methodLogger];
+            _greet_decorators = [methodLogger("LOG:")];
             __esDecorate(_a, null, _greet_decorators, { kind: "method", name: "greet", static: false, private: false, access: { has: obj => "greet" in obj, get: obj => obj.greet }, metadata: _metadata }, null, _instanceExtraInitializers);
             if (_metadata) Object.defineProperty(_a, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
         })(),

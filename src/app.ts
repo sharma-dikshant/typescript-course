@@ -2,25 +2,24 @@
 
 // decorators is a special kind of declarations that can modify classes, methods, properties, parameters at design time;
 
-function methodLogger(target: any, context: any) {
-    // console.log('method decorators');
-
-    function replacement(this: any, ...args: any[]) {
-        // console.log(this);
-        // console.log(args);
-        console.log('invocation started');
-        const res = target.call(this, ...args);
-        console.log("invocation ended");
+/** Decorator Factory function */
+function methodLogger(prefix: string) {
+    // decorator function
+    return function (target: any, context: any) {
+        // replacement function
+        return function (this: any, ...args: any[]) {
+            console.log(`${prefix} invocation started`);
+            const res = target.call(this, ...args);
+            console.log(`${prefix} invocation ended`);
+        }
     }
-
-    return replacement;
 }
  
 
 class User {
     constructor(public name: string) {}
 
-    @methodLogger
+    @methodLogger("LOG:")
     greet(greeting: string) {
         console.log(`${greeting} ${this.name}`)
     }
