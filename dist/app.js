@@ -68,5 +68,42 @@ let User = (() => {
         _a;
 })();
 let user = new User("newUser");
-user.greet('hello, howre you ');
+// user.greet('hello, howre you ');
+/** Field Decorators */
+function addDefaultPost(target, context) {
+    return function (initialValue) {
+        initialValue.push({
+            title: "Default",
+            content: "Default Post"
+        });
+        return initialValue;
+    };
+}
+let Author = (() => {
+    var _a;
+    let _posts_decorators;
+    let _posts_initializers = [];
+    let _posts_extraInitializers = [];
+    return _a = class Author {
+            constructor(name) {
+                this.name = name;
+                this.posts = __runInitializers(this, _posts_initializers, []);
+                __runInitializers(this, _posts_extraInitializers);
+                this.name = name;
+            }
+            greet(greeting) {
+                console.log(`${greeting} ${this.name}`);
+            }
+        },
+        (() => {
+            const _metadata = typeof Symbol === "function" && Symbol.metadata ? Object.create(null) : void 0;
+            _posts_decorators = [(addDefaultPost)];
+            __esDecorate(null, null, _posts_decorators, { kind: "field", name: "posts", static: false, private: false, access: { has: obj => "posts" in obj, get: obj => obj.posts, set: (obj, value) => { obj.posts = value; } }, metadata: _metadata }, _posts_initializers, _posts_extraInitializers);
+            if (_metadata) Object.defineProperty(_a, Symbol.metadata, { enumerable: true, configurable: true, writable: true, value: _metadata });
+        })(),
+        _a;
+})();
+const author = new Author("test user");
+console.log(author.posts);
+author.greet("Hello");
 //# sourceMappingURL=app.js.map

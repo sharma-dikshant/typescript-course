@@ -27,4 +27,39 @@ class User {
 
 let user: User = new User("newUser");
 
-user.greet('hello, howre you ');
+// user.greet('hello, howre you ');
+
+
+
+/** Field Decorators */
+
+function addDefaultPost<This, Value extends Post[]>(target: undefined, context: ClassFieldDecoratorContext<This, Value>) {
+    return function(initialValue: Value) {
+        initialValue.push({
+            title: "Default",
+            content: "Default Post"
+        })
+        return initialValue;
+    }
+}
+
+type Post = {
+    title: string;
+    content: string;
+}
+
+class Author {
+    @addDefaultPost<Author, Post[]>
+    public posts: Post[] = [];
+
+    constructor(public name: string) {}
+
+    greet(greeting: string) {
+        console.log(`${greeting} ${this.name}`)
+    }
+}
+
+
+const author = new Author("test user");
+console.log(author.posts)
+author.greet("Hello")
